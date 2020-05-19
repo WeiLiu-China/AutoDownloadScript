@@ -17,7 +17,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.*;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.*;
@@ -202,51 +206,50 @@ public class HttpUtil {
 	}
 
 
-	private static X509TrustManager TRUST_ALL = new X509TrustManager() {
-		@Override
-		public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
 
-		}
-
-		@Override
-		public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-
-		}
-
-		@Override
-		public X509Certificate[] getAcceptedIssuers() {
-			return new X509Certificate[0];
-		}
-	};
-	private static HostnameVerifier TRUST_ALL_HOSTNAME_VERIFIER = new HostnameVerifier() {
-		@Override
-		public boolean verify(String s, SSLSession sslSession) {
-			return true;
-		}
-	};
-
-
-	public static String sendMsg(String accessToken, String userToken, String url, JSONObject msg) {
-		logger.info("pushMsg accessToken {} userToken {} url {} msg {}", accessToken, userToken, url, msg);
-		try (CloseableHttpClient hc = HttpClientBuilder.create().build()) {
-			HttpPost post = new HttpPost(url);
-			post.addHeader("Authorization", "Bearer " + accessToken);
-			post.addHeader("userToken", userToken);
-			post.addHeader("Content-type", "application/json");
-			post.setEntity(new StringEntity(msg.toJSONString(), "utf-8"));
-			HttpResponse response = hc.execute(post);
-			String bodyStr = EntityUtils.toString(response.getEntity());
-			JSONObject jsonObject = JSON.parseObject(bodyStr);
-//            logger.info("pushMsg bodyStr {}",jsonObject.toJSONString());
-			if (response.getStatusLine().getStatusCode() != 200) {
-				return jsonObject.toJSONString();
+	public static String sendGet(String url, String param) {
+		String result = "";
+		BufferedReader in = null;
+		try {
+			String urlNameString = url + "?" + param;
+			URL realUrl = new URL(urlNameString);
+			// 打开和URL之间的连接
+			URLConnection connection = realUrl.openConnection();
+			// 设置通用的请求属性
+			connection.setRequestProperty("accept", "*/*");
+			connection.setRequestProperty("connection", "Keep-Alive");
+			connection.setRequestProperty("user-agent",
+					"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+			// 建立实际的连接
+			connection.connect();
+			// 获取所有响应头字段
+			Map<String, List<String>> map = connection.getHeaderFields();
+			// 遍历所有的响应头字段
+			for (String key : map.keySet()) {
+				System.out.println(key + "--->" + map.get(key));
 			}
-			post.releaseConnection();
-			hc.getConnectionManager().closeIdleConnections(0, TimeUnit.MILLISECONDS);
-			return "";
+			// 定义 BufferedReader输入流来读取URL的响应
+			in = new BufferedReader(new InputStreamReader(
+					connection.getInputStream()));
+			String line;
+			while ((line = in.readLine()) != null) {
+				result += line;
+			}
 		} catch (Exception e) {
-			logger.error("pushMsg send request error: {}", e);
-			return e.getMessage();
+			System.out.println("发送GET请求出现异常！" + e);
+			e.printStackTrace();
 		}
+		// 使用finally块来关闭输入流
+		finally {
+			try {
+				if (in != null) {
+					in.close();
+				}
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		return result;
 	}
+
 }
