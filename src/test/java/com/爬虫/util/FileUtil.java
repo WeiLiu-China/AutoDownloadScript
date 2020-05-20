@@ -66,6 +66,7 @@ public class FileUtil {
 			}
 
 		} catch (Exception e) {
+			System.out.println("下载失败url  :\t " + url);
 			delete(path);
 			e.printStackTrace();
 		}
