@@ -1,0 +1,50 @@
+#----------------------------------------管理员管理------------------------------------------------------###
+
+###--------------------登录---------------------------------------
+POST http://localhost:3330/icms/admin/public/login?code=lwzs&command=lwzs&sysType=1
+
+###-----------------新增-add--------------------
+POST http://localhost:3330/icms/admin/dictionary/xdzb/add
+Content-Type: application/json
+Authorization: Bearer AU:-DUTY-FRONT-732465905027944
+
+{
+  "name": "上市挂牌",
+  "belong": 1,
+  "isSearch": 1,
+  "isSearchKey":1,
+  "type":1,
+  "orderNum":5
+}
+
+###----------------删除-delete--------------------------
+GET http://localhost:3330/icms/admin/dictionary/xdzb/delete?id=6
+BELONG:1
+Authorization: Bearer AU-D-F-101541575239953
+Accept: application/json
+
+###--------------编辑-edit------------------------------
+POST http://localhost:3330/icms/admin/dictionary/xdzb/edit
+Content-Type: application/json
+
+{
+
+  "id": "dc4aa3cfbcebefd28f5c3fd7dc63ff8e",
+  "name": "联系电话",
+  "orderNum": 5,
+  "isSearch": 1,
+  "isSearchKey":1
+}
+
+###---------------管理员管理-列表查询--list---------------------
+POST http://localhost:3330/icms/admin/dictionary/xdzb/list
+BELONG:1
+Authorization: Bearer AU-D-F-627057339971375
+Content-Type: application/json
+
+{
+  "keyWords": "",
+  "belong": 1,
+  "pageNo":1,
+  "pageSize":10
+}
