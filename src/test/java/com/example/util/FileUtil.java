@@ -4,6 +4,8 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 
+import static com.example.util.HttpClientUtil.downLoadByHttpClient;
+
 /**
  * Copyright 2004-2020 by xdja.com  All rights reserved.
  *
@@ -15,7 +17,7 @@ import java.net.URLConnection;
  */
 public class FileUtil {
 
-	public static final int TWO_MIN =  2 * 60 * 1000;
+	public static final int TWO_MIN = 2 * 60 * 1000;
 
 	public static void makeDir(String path) {
 		File file = new File(path);
@@ -72,8 +74,7 @@ public class FileUtil {
 	/**
 	 * 删除文件，可以是文件或文件夹
 	 *
-	 * @param fileName
-	 *            要删除的文件名
+	 * @param fileName 要删除的文件名
 	 * @return 删除成功返回true，否则返回false
 	 */
 	public static boolean delete(String fileName) {
@@ -88,11 +89,11 @@ public class FileUtil {
 				return deleteDirectory(fileName);
 		}
 	}
+
 	/**
 	 * 删除单个文件
 	 *
-	 * @param fileName
-	 *            要删除的文件的文件名
+	 * @param fileName 要删除的文件的文件名
 	 * @return 单个文件删除成功返回true，否则返回false
 	 */
 	public static boolean deleteFile(String fileName) {
@@ -115,8 +116,7 @@ public class FileUtil {
 	/**
 	 * 删除目录及目录下的文件
 	 *
-	 * @param dir
-	 *            要删除的目录的文件路径
+	 * @param dir 要删除的目录的文件路径
 	 * @return 目录删除成功返回true，否则返回false
 	 */
 	public static boolean deleteDirectory(String dir) {
@@ -159,6 +159,25 @@ public class FileUtil {
 			return false;
 		}
 	}
+
+	public static void clientDownload(String path, String name, String downloadUrl) throws Exception {
+		FileUtil.makeDir(path);
+		File file = new File(path + name);
+		if (!file.exists()) {
+			try {
+				// http请求
+				OutputStream output = new FileOutputStream(file);
+				downLoadByHttpClient(downloadUrl, output);
+			} catch (IOException e) {
+				delete(path);
+				System.out.println("下载失败---e.getMessage()----------" + e.getMessage());
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("文件已存在--------" + path + name);
+		}
+	}
+
 	/**
 	 * @param path     需要下载的文件路径，包括后缀名
 	 * @param inStream 输入流
