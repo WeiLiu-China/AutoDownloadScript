@@ -2,6 +2,7 @@ package com.example.mybatisplus.fuyinTV;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.example.mybatisplus.ClientDownloadThread;
 import com.example.mybatisplus.CommonThread;
 import com.example.mybatisplus.DownloadThread;
 import com.example.mybatisplus.fuyinTV.bean.*;
@@ -20,27 +21,17 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.example.mybatisplus.Constant.runThreadNum;
 import static com.example.mybatisplus.Constant.threadNum;
 import static com.example.util.FileUtil.download;
 import static com.example.util.HttpClientUtil.downLoadByHttpClient;
 import static com.example.util.HttpUtil.doPostXWwwFormUrlencoded;
 import static com.example.util.StringUtil.subString;
 
-public class downloadFuYinTV {
+public class FuYinTV {
 
 	public static final String 福音_TV = "福音TV";
 	public static final String PAGESIZE = "10000";
-
-	@Test
-	public void test4() {
-		String s = "_jsonpku8mk42huei([{\"id\":301,\"category\":\"刘东崐\",\"parentid\":109,\"sort\":2,\"sort2\":1,\"moviecount\":13,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/301.jpg\"},{\"id\":96,\"category\":\"唐崇荣\",\"parentid\":109,\"sort\":3,\"sort2\":0,\"moviecount\":215,\"nodes\":10,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/96.jpg\"},{\"id\":191,\"category\":\"江守道\",\"parentid\":109,\"sort\":4,\"sort2\":4,\"moviecount\":24,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/191.jpg\"},{\"id\":297,\"category\":\"汪川生\",\"parentid\":109,\"sort\":5,\"sort2\":1,\"moviecount\":26,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/297.jpg\"},{\"id\":125,\"category\":\"林慈信\",\"parentid\":109,\"sort\":6,\"sort2\":0,\"moviecount\":14,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/125.jpg\"},{\"id\":122,\"category\":\"康来昌\",\"parentid\":109,\"sort\":7,\"sort2\":0,\"moviecount\":20,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/122.jpg\"},{\"id\":101,\"category\":\"陈希曾\",\"parentid\":109,\"sort\":8,\"sort2\":0,\"moviecount\":72,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/101.jpg\"},{\"id\":99,\"category\":\"刘志雄\",\"parentid\":109,\"sort\":9,\"sort2\":0,\"moviecount\":119,\"nodes\":1,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/99.jpg\"},{\"id\":97,\"category\":\"吴勇\",\"parentid\":109,\"sort\":10,\"sort2\":0,\"moviecount\":31,\"nodes\":1,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/97.jpg\"},{\"id\":98,\"category\":\"于宏洁\",\"parentid\":109,\"sort\":11,\"sort2\":0,\"moviecount\":82,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/98.jpg\"},{\"id\":177,\"category\":\"程蒙恩专辑\",\"parentid\":109,\"sort\":12,\"sort2\":1,\"moviecount\":90,\"nodes\":2,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/177.jpg\"},{\"id\":189,\"category\":\"寇世远\",\"parentid\":109,\"sort\":13,\"sort2\":2,\"moviecount\":33,\"nodes\":1,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/189.jpg\"},{\"id\":92,\"category\":\"曾霖芳\",\"parentid\":109,\"sort\":14,\"sort2\":0,\"moviecount\":7,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/92.jpg\"},{\"id\":193,\"category\":\"冯秉诚\",\"parentid\":109,\"sort\":15,\"sort2\":6,\"moviecount\":14,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/193.jpg\"},{\"id\":204,\"category\":\"王明道\",\"parentid\":109,\"sort\":16,\"sort2\":2,\"moviecount\":2,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/204.jpg\"},{\"id\":190,\"category\":\"吉牧师\",\"parentid\":109,\"sort\":17,\"sort2\":3,\"moviecount\":9,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/190.jpg\"},{\"id\":126,\"category\":\"徐兴言\",\"parentid\":109,\"sort\":18,\"sort2\":0,\"moviecount\":12,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/126.jpg\"},{\"id\":100,\"category\":\"寇绍恩\",\"parentid\":109,\"sort\":19,\"sort2\":0,\"moviecount\":20,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/100.jpg\"},{\"id\":201,\"category\":\"彭动平\",\"parentid\":109,\"sort\":20,\"sort2\":2,\"moviecount\":7,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/201.jpg\"},{\"id\":218,\"category\":\"吴献章\",\"parentid\":109,\"sort\":21,\"sort2\":1,\"moviecount\":13,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/218.jpg\"},{\"id\":223,\"category\":\"庄祖鲲\",\"parentid\":109,\"sort\":22,\"sort2\":1,\"moviecount\":15,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/223.jpg\"},{\"id\":217,\"category\":\"王永信\",\"parentid\":109,\"sort\":23,\"sort2\":3,\"moviecount\":1,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/217.jpg\"},{\"id\":199,\"category\":\"李秀全\",\"parentid\":109,\"sort\":24,\"sort2\":3,\"moviecount\":6,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/199.jpg\"},{\"id\":194,\"category\":\"焦源濂\",\"parentid\":109,\"sort\":25,\"sort2\":1,\"moviecount\":3,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/194.jpg\"},{\"id\":288,\"category\":\"张路加\",\"parentid\":109,\"sort\":26,\"sort2\":1,\"moviecount\":10,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/288.jpg\"},{\"id\":200,\"category\":\"楼建华\",\"parentid\":109,\"sort\":27,\"sort2\":1,\"moviecount\":6,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/200.jpg\"},{\"id\":196,\"category\":\"李健\",\"parentid\":109,\"sort\":28,\"sort2\":1,\"moviecount\":18,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/196.jpg\"},{\"id\":203,\"category\":\"藤近辉\",\"parentid\":109,\"sort\":29,\"sort2\":1,\"moviecount\":3,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/203.jpg\"},{\"id\":202,\"category\":\"沈保罗\",\"parentid\":109,\"sort\":30,\"sort2\":3,\"moviecount\":4,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/202.jpg\"},{\"id\":192,\"category\":\"李慕圣\",\"parentid\":109,\"sort\":31,\"sort2\":5,\"moviecount\":6,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/192.jpg\"},{\"id\":198,\"category\":\"刘同苏\",\"parentid\":109,\"sort\":32,\"sort2\":2,\"moviecount\":3,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/198.jpg\"},{\"id\":219,\"category\":\"杨培兹\",\"parentid\":109,\"sort\":33,\"sort2\":1,\"moviecount\":7,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/219.jpg\"},{\"id\":220,\"category\":\"杨心斐\",\"parentid\":109,\"sort\":34,\"sort2\":1,\"moviecount\":2,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/220.jpg\"},{\"id\":221,\"category\":\"于力工\",\"parentid\":109,\"sort\":35,\"sort2\":1,\"moviecount\":4,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/221.jpg\"},{\"id\":252,\"category\":\"保罗华许\",\"parentid\":109,\"sort\":36,\"sort2\":1,\"moviecount\":4,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/252.jpg\"},{\"id\":263,\"category\":\"约翰派博\",\"parentid\":109,\"sort\":37,\"sort2\":1,\"moviecount\":2,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/263.jpg\"},{\"id\":264,\"category\":\"约翰麦克阿瑟\",\"parentid\":109,\"sort\":38,\"sort2\":2,\"moviecount\":2,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/264.jpg\"},{\"id\":281,\"category\":\"李健安\",\"parentid\":109,\"sort\":39,\"sort2\":3,\"moviecount\":10,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/281.jpg\"},{\"id\":280,\"category\":\"曾劭恺\",\"parentid\":109,\"sort\":41,\"sort2\":1,\"moviecount\":10,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/280.jpg\"},{\"id\":107,\"category\":\"其他讲员\",\"parentid\":109,\"sort\":43,\"sort2\":0,\"moviecount\":104,\"nodes\":0,\"thumb\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/mzzl\\/107.jpg\"}]);";
-		String json = "[" + subString(s, "([", "])") + "]";
-		List<First_PeopleBean> first_peopleBeans = JSONArray.parseArray(json, First_PeopleBean.class);
-		System.out.println(first_peopleBeans);
-		System.out.println("");
-	}
-
-	String host = "https://www.tingdao.org";
 
 	String getJsonArrayString(String jsString) {
 		return "[" + subString(jsString, "([", "])") + "]";
@@ -51,12 +42,15 @@ public class downloadFuYinTV {
 	}
 
 	@Test
-	public void downloadTV() throws Exception {
+	public void download() throws Exception {
+		System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
+		System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
+		System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.commons.httpclient", "stdout");
+
 		CommonThread commonThread = new CommonThread();
 		commonThread.start();
 
-		String path = "D:\\爬虫\\";      //保存目录
-		path += 福音_TV;
+		String path = "F:\\爬虫\\福音TV\\";      //保存目录
 
 		// 牧者专栏
 		getPeopleList(path + "/选项/牧者专栏", "https://data-api.cnfuyin.com/api/category/mzzl?app=fytv&device=mobile&version=1.1.0&callback=_jsonpku8mk42huei");
@@ -209,7 +203,15 @@ public class downloadFuYinTV {
 				//download mp4
 				/*downDetail(i + 1, path + "/mp4", four_detailBean.getTitle(),
 						four_detailBean.getUrl_2(), ".mp4");*/
-				DownloadThread downloadThread = new DownloadThread("fuyin_TV", path, i, four_detailBean.getTitle(),
+				if (runThreadNum > 1) {
+					for (int j = 0; j < 1000; j++) {
+						Thread.sleep(2 * 1000);
+						if (runThreadNum < 5) {
+							break;
+						}
+					}
+				}
+				ClientDownloadThread downloadThread = new ClientDownloadThread("fuyin_TV", path, i, four_detailBean.getTitle(),
 						".mp4", four_detailBean.getUrl_2());
 				pool.submit(downloadThread);
 			} catch (Exception e) {
@@ -219,7 +221,15 @@ public class downloadFuYinTV {
 			try {
 				/*downDetail(i + 1, path + "/mp3", four_detailBean.getTitle(),
 						four_detailBean.getUrl_5(), ".mp3");*/
-				DownloadThread downloadThread = new DownloadThread("fuyin_TV", path, i, four_detailBean.getTitle(),
+				if (runThreadNum > 1) {
+					for (int j = 0; j < 1000; j++) {
+						Thread.sleep(2 * 1000);
+						if (runThreadNum < 5) {
+							break;
+						}
+					}
+				}
+				ClientDownloadThread downloadThread = new ClientDownloadThread("fuyin_TV", path, i, four_detailBean.getTitle(),
 						".mp3", four_detailBean.getUrl_5());
 				pool.submit(downloadThread);
 			} catch (Exception e) {
@@ -227,23 +237,6 @@ public class downloadFuYinTV {
 			}
 		} else {
 			System.out.println("------------失败------------" + four_detailBean.toString());
-		}
-	}
-
-	void downDetail(int i, String path, String name, String downloadUrl, String type) throws Exception {
-		FileUtil.makeDir(path);
-		File file = new File(path + "/" + i + "_" + name + type);
-		if (!file.exists()) {
-			try {
-				// http请求
-				OutputStream output = new FileOutputStream(file);
-				downLoadByHttpClient(downloadUrl, output);
-			} catch (IOException e) {
-				System.out.println("下载失败---e.getMessage()----------" + e.getMessage());
-				e.printStackTrace();
-			}
-		} else {
-			System.out.println("文件已存在--------" + path + "/" + i + "_" + name + type);
 		}
 	}
 
