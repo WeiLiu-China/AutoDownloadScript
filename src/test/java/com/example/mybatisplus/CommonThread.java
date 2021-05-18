@@ -28,13 +28,13 @@ public class CommonThread extends Thread {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			System.out.println("进行中的线程 :-----------------\n");
+			//System.out.println("进行中的线程 :-----------------\n");
 
 			String[] split = threadNameList.toString().split(",");
 			for (String name : split) {
-				System.out.println(name + "\n");
+			//	System.out.println(name + "\n");
 			}
-			System.out.println("\n");
+			//System.out.println("\n");
 
 		}
 	}

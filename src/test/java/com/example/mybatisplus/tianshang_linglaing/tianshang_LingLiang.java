@@ -3,7 +3,6 @@ package com.example.mybatisplus.tianshang_linglaing;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.mybatisplus.CommonThread;
-import com.example.mybatisplus.DownloadThread;
 import com.example.mybatisplus.tianshang_linglaing.bean.First_AllListBean;
 import com.example.mybatisplus.tianshang_linglaing.bean.Four_DetailBean;
 import com.example.mybatisplus.tianshang_linglaing.bean.Second_PeopleListBean;
@@ -12,9 +11,6 @@ import com.example.util.FileUtil;
 import org.junit.Test;
 import org.springframework.util.ObjectUtils;
 
-import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,7 +19,7 @@ import static com.example.mybatisplus.Constant.threadNum;
 import static com.example.util.FileUtil.download;
 import static com.example.util.HttpUtil.doPostXWwwFormUrlencoded;
 
-public class downloadTianshangLingLiang {
+public class tianshang_LingLiang {
 
 	@Test
 	public void test4() {
@@ -38,11 +34,11 @@ public class downloadTianshangLingLiang {
 	String host = "https://www.tingdao.org";
 
 	@Test
-	public void downloadMusic() throws Exception {
+	public void download() throws Exception {
 		CommonThread commonThread = new CommonThread();
 		commonThread.start();
 
-		String path = "D:\\爬虫\\天上灵粮";      //保存目录
+		String path = "E:\\爬虫\\天上灵粮";      //保存目录
 		getAllList(path);
 	}
 
@@ -108,7 +104,7 @@ public class downloadTianshangLingLiang {
 				!ObjectUtils.isEmpty(threeXiLieBean.getList())) {
 			for (int i = 0; i < threeXiLieBean.getList().size(); i++) {
 				Three_XiLieBean.XiLie xiLie = threeXiLieBean.getList().get(i);
-				getDetail(path + "/" + xiLie.getTitle(), xiLie.getZjid(), "1");
+				getDetail(path + "/" + xiLie.getTitle(), xiLie.getZjid(), "1", 0);
 			}
 		} else {
 			System.out.println("------------error------------" + threeXiLieBean.toString());
@@ -124,7 +120,7 @@ public class downloadTianshangLingLiang {
 	//创建一个具有固定线程数的线程池
 	private final static ExecutorService pool = Executors.newFixedThreadPool(threadNum);
 
-	void getDetail(String path, String id, String page) throws Exception {
+	void getDetail(String path, String id, String page, Integer j) throws Exception {
 		Map<String, String> param = new HashMap<>();
 		param.put("id", id);
 		param.put("page", page);
@@ -135,13 +131,12 @@ public class downloadTianshangLingLiang {
 		Four_DetailBean four_detailBean = JSONObject.parseObject(retrunString, Four_DetailBean.class);
 		if (four_detailBean.getStatus().equals("1") && !ObjectUtils.isEmpty(four_detailBean) &&
 				!ObjectUtils.isEmpty(four_detailBean.getList())) {
-			for (int i = 0; i < four_detailBean.getList().size(); i++) {
+			for (int i = j; i < four_detailBean.getList().size() + j; i++) {
 				Four_DetailBean.Detail detail = four_detailBean.getList().get(i);
 				try {
 					//downDetail(i + 1, path, detail.getTitle(), detail.getVideo_url());
-					DownloadThread downloadThread = new DownloadThread("tianshang_lingliang", path, i, detail.getTitle(),
-							".mp3", detail.getVideo_url());
-					pool.submit(downloadThread);
+					FileUtil.download(path, "/" + i + "_" + detail.getTitle() + ".mp3", detail.getVideo_url());
+
 				} catch (Exception e) {
 					System.out.println("------------失败------------" + detail.getVideo_url());
 				}
@@ -152,20 +147,9 @@ public class downloadTianshangLingLiang {
 		//继续往下
 		if (!ObjectUtils.isEmpty(four_detailBean.getList()) && four_detailBean.getList().size() >= 10) {
 			int nextPage = Integer.parseInt(page) + 1;
-			getDetail(path, id, "" + nextPage);
+			getDetail(path, id, "" + nextPage, four_detailBean.getList().size() + j);
 		}
 
-	}
-
-	void downDetail(int i, String path, String name, String url) throws Exception {
-		FileUtil.makeDir(path);
-		//获取URL对象
-		URL urlConnection = new URL(url);
-		//根据URL打开链接
-		URLConnection connection = urlConnection.openConnection();
-		//从连接处获取输入流对象
-		InputStream inputStream = connection.getInputStream();
-		download(path + "/" + i + "_" + name + ".mp3", inputStream);
 	}
 
 

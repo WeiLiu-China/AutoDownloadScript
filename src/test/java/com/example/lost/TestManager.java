@@ -1,3 +1,4 @@
+/*
 package com.example.lost;
 
 
@@ -33,9 +34,11 @@ public class TestManager {
 
 	private static final Logger logger = LoggerFactory.getLogger(TestManager.class);
 
-	/**
+	*/
+/**
 	 * long to date
-	 **/
+	 **//*
+
 	@org.junit.Test
 	public void test22() throws Exception {
 
@@ -200,9 +203,11 @@ public class TestManager {
 		Long aMin = 1000L * 60;
 		Long aSec = 1000L;
 		long pre = System.currentTimeMillis();
-		/**
+		*/
+/**
 		 * 10亿
-		 */
+		 *//*
+
 		Integer size = 1000000000;
 		Integer a3 = 0;
 		for (int i = 0; i < size; i++) {
@@ -397,3 +402,4 @@ public class TestManager {
 	public static final String formatStr_yyyyMMdd = "yyyy-MM-dd";
 
 }
+*/
