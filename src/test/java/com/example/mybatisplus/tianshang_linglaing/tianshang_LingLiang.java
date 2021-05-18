@@ -69,7 +69,8 @@ public class tianshang_LingLiang {
 		String url = "/index/Sermon/Sermon";
 		String retrunString = sendPost(host, url, param, "牧人列表");
 		Second_PeopleListBean secondPeopleListBean = JSONObject.parseObject(retrunString, Second_PeopleListBean.class);
-		if (secondPeopleListBean.getStatus().equals("1") && !ObjectUtils.isEmpty(secondPeopleListBean) &&
+		if (!ObjectUtils.isEmpty(secondPeopleListBean) && secondPeopleListBean.getStatus().equals("1")
+				&&
 				!ObjectUtils.isEmpty(secondPeopleListBean.getData())) {
 			for (int i = 0; i < secondPeopleListBean.getData().size(); i++) {
 				Second_PeopleListBean.User user = secondPeopleListBean.getData().get(i);
@@ -100,7 +101,7 @@ public class tianshang_LingLiang {
 		String url = "/index/Sermon/Authoralbum";
 		String retrunString = sendPost(host, url, param, "牧人系列");
 		Three_XiLieBean threeXiLieBean = JSONObject.parseObject(retrunString, Three_XiLieBean.class);
-		if (threeXiLieBean.getStatus().equals("1") && !ObjectUtils.isEmpty(threeXiLieBean) &&
+		if (!ObjectUtils.isEmpty(threeXiLieBean) && threeXiLieBean.getStatus().equals("1") &&
 				!ObjectUtils.isEmpty(threeXiLieBean.getList())) {
 			for (int i = 0; i < threeXiLieBean.getList().size(); i++) {
 				Three_XiLieBean.XiLie xiLie = threeXiLieBean.getList().get(i);
@@ -117,9 +118,6 @@ public class tianshang_LingLiang {
 
 	}
 
-	//创建一个具有固定线程数的线程池
-	private final static ExecutorService pool = Executors.newFixedThreadPool(threadNum);
-
 	void getDetail(String path, String id, String page, Integer j) throws Exception {
 		Map<String, String> param = new HashMap<>();
 		param.put("id", id);
@@ -127,9 +125,9 @@ public class tianshang_LingLiang {
 
 
 		String url = "/index/Sermon/details";
-		String retrunString = sendPost(host, url, param, "牧人系列");
+		String retrunString = sendPost(host, url, param, "详情");
 		Four_DetailBean four_detailBean = JSONObject.parseObject(retrunString, Four_DetailBean.class);
-		if (four_detailBean.getStatus().equals("1") && !ObjectUtils.isEmpty(four_detailBean) &&
+		if (!ObjectUtils.isEmpty(four_detailBean) && four_detailBean.getStatus().equals("1") &&
 				!ObjectUtils.isEmpty(four_detailBean.getList())) {
 			for (int i = 0; i < four_detailBean.getList().size(); i++) {
 				Four_DetailBean.Detail detail = four_detailBean.getList().get(i);
@@ -140,6 +138,8 @@ public class tianshang_LingLiang {
 
 				} catch (Exception e) {
 					System.out.println("------------失败------------" + detail.getVideo_url());
+					System.out.println("------------失败原因------------" + e.getMessage());
+
 				}
 			}
 		} else {
@@ -155,9 +155,13 @@ public class tianshang_LingLiang {
 
 
 	String sendPost(String host, String url, Map<String, String> param, String type) throws Exception {
-		String rt = doPostXWwwFormUrlencoded(host + url, param, type);
-		if (ObjectUtils.isEmpty(rt)) {
-			throw new RuntimeException(type + "发送失败");
+		String rt = null;
+		try {
+			rt = doPostXWwwFormUrlencoded(host + url, param, type);
+
+		} catch (Exception e) {
+			System.out.println("-------------------------\ndoPostXWwwFormUrlencoded rt为null:\t" + host + url + type + "\n");
+			System.out.println("-----------错误信息：" + e.getMessage());
 		}
 		return rt;
 	}

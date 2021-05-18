@@ -102,6 +102,7 @@ public class HttpUtil {
 			System.out.println(type + "decodeUnicode(result)" + result + "\n\n\n\n");
 			return result;
 		} catch (Exception e) {
+			System.out.println("postURL:\n" + postURL);
 			throw new Exception(e.getMessage());
 		}
 	}
