@@ -131,11 +131,12 @@ public class tianshang_LingLiang {
 		Four_DetailBean four_detailBean = JSONObject.parseObject(retrunString, Four_DetailBean.class);
 		if (four_detailBean.getStatus().equals("1") && !ObjectUtils.isEmpty(four_detailBean) &&
 				!ObjectUtils.isEmpty(four_detailBean.getList())) {
-			for (int i = j; i < four_detailBean.getList().size() + j; i++) {
+			for (int i = 0; i < four_detailBean.getList().size(); i++) {
 				Four_DetailBean.Detail detail = four_detailBean.getList().get(i);
 				try {
 					//downDetail(i + 1, path, detail.getTitle(), detail.getVideo_url());
-					FileUtil.download(path, "/" + i + "_" + detail.getTitle() + ".mp3", detail.getVideo_url());
+					int name_num = i + 1 + j;
+					FileUtil.download(path, "/" + name_num + "_" + detail.getTitle() + ".mp3", detail.getVideo_url());
 
 				} catch (Exception e) {
 					System.out.println("------------失败------------" + detail.getVideo_url());
