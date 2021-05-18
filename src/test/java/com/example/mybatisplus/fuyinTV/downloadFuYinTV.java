@@ -4,10 +4,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.mybatisplus.CommonThread;
 import com.example.mybatisplus.DownloadThread;
-import com.example.mybatisplus.fuyinTV.bean.Four_DetailBean;
-import com.example.mybatisplus.fuyinTV.bean.Three_UrlBean;
-import com.example.mybatisplus.fuyinTV.bean.First_PeopleBean;
-import com.example.mybatisplus.fuyinTV.bean.Second_XiLieBean;
+import com.example.mybatisplus.fuyinTV.bean.*;
+import com.example.mybatisplus.fuyinTV.bean.最近更新.Second_最近更新_XiLieBean;
+import com.example.mybatisplus.fuyinTV.bean.视频茶经.Second_视频茶经_XiLieBean;
 import com.example.util.FileUtil;
 import org.junit.Test;
 import org.springframework.util.ObjectUtils;
@@ -56,35 +55,95 @@ public class downloadFuYinTV {
 		CommonThread commonThread = new CommonThread();
 		commonThread.start();
 
-		String path = "D:\\爬虫";      //保存目录
+		String path = "D:\\爬虫\\";      //保存目录
 		path += 福音_TV;
-		getPeopleList(path + "/选项/牧者专栏");
+
+		// 牧者专栏
+		getPeopleList(path + "/选项/牧者专栏", "https://data-api.cnfuyin.com/api/category/mzzl?app=fytv&device=mobile&version=1.1.0&callback=_jsonpku8mk42huei");
+
+		//视频茶经
+		getFirst_视频茶经(path + "/选项/视频茶经", "https://data-api.cnfuyin.com/api/category/bible?app=fytv&device=mobile&version=1.1.0&callback=_jsonptiujsnm8xlk");
+
+		//最近更新
+		second_最近更新_GetXilie(path + "/选项/最近更新", "https://data-api.cnfuyin" +
+				".com/api/movie/tops?app=fytv&device=mobile&version=1.1.0&callback=_jsonpep5vass79w");
+
+		//推荐视频
+		second_GetXilie(path + "/选项/推荐视频", "https://data-api.cnfuyin.com/api/movie/lists?app=fytv&device=mobile&version");
+
+		//主日信息
+		second_GetXilie(path + "/选项/主日信息", "https://data-api.cnfuyin.com/api/movie/lists?app=fytv&device=mobile" +
+				"&version=1.1.0&catid=205&page=1&pagesize=10000&callback=_jsonps9lj1bykkql");
+
+		//主页其他内容
+		getFirst_IndexCategory(path + "/主页其他内容", "https://data-api.cnfuyin.com/api/misc/indexCategory?app=fytv&device=mobile&version=1.1.0&callback=_jsonptdwtzvce87");
+
 
 	}
 
-
-	void getPeopleList(String path) throws Exception {
+	void getFirst_视频茶经(String path, String url) throws Exception {
 		Map<String, String> param = new HashMap<>();
-		String url = "https://data-api.cnfuyin.com/api/category/mzzl?app=fytv&device=mobile&version=1.1.0&callback=_jsonpku8mk42huei";
-		String retrunString = doPostXWwwFormUrlencoded(url, param, "牧人列表");
-		List<First_PeopleBean> first_peopleBeans = JSONArray.parseArray(getJsonArrayString(retrunString), First_PeopleBean.class);
+		String retrunString = doPostXWwwFormUrlencoded(url, param, "getFirst_视频茶经");
+		List<Second_视频茶经_XiLieBean> second_视频茶经_xiLieBeans = JSONArray.parseArray(getJsonArrayString(retrunString), Second_视频茶经_XiLieBean.class);
+		getFirst_视频茶经_内循环(path, second_视频茶经_xiLieBeans);
+	}
+
+	void getFirst_视频茶经_内循环(String path, List<Second_视频茶经_XiLieBean> second_视频茶经_xiLieBeans) throws Exception {
+		if (!ObjectUtils.isEmpty(second_视频茶经_xiLieBeans) && second_视频茶经_xiLieBeans.size() > 0) {
+			for (int i = 0; i < second_视频茶经_xiLieBeans.size(); i++) {
+				Second_视频茶经_XiLieBean second_视频茶经_xiLieBean = second_视频茶经_xiLieBeans.get(i);
+				if (!ObjectUtils.isEmpty(second_视频茶经_xiLieBean.getBible_id()) && ObjectUtils.isEmpty(second_视频茶经_xiLieBean.getChild())) {
+					second_GetXilie(path + "/" + second_视频茶经_xiLieBean.getName(), "https://data-api.cnfuyin" + ".com/api/movie/lists?" + "app=fytv&device=mobile&version=1.1" +
+							".0&bible_id=" + second_视频茶经_xiLieBean.getBible_id() +
+							"&page=1&pagesize=" + PAGESIZE + "&callback=_jsonp4yhph44ugy");
+				} else {
+					getFirst_视频茶经_内循环(path + "/" + second_视频茶经_xiLieBean.getName(),
+							second_视频茶经_xiLieBeans.get(i).getChild());
+				}
+
+			}
+		} else {
+			System.out.println("------------error------------path: \n" + path + "\n内容:" + second_视频茶经_xiLieBeans.toString() + "\n");
+		}
+	}
+
+	void getFirst_IndexCategory(String path, String url) throws Exception {
+		Map<String, String> param = new HashMap<>();
+		String retrunString = doPostXWwwFormUrlencoded(url, param, "主页");
+		List<First_IndexCategory> first_indexCategories = JSONArray.parseArray(getJsonArrayString(retrunString), First_IndexCategory.class);
+		if (!ObjectUtils.isEmpty(first_indexCategories) && first_indexCategories.size() > 0) {
+			for (int i = 0; i < first_indexCategories.size(); i++) {
+				First_IndexCategory first_indexCategory = first_indexCategories.get(i);
+				second_GetXilie(path + "/" + first_indexCategory.getCatname(), "https://data-api.cnfuyin" + ".com/api/movie/lists?" + "app=fytv&device=mobile&version=1.1" +
+						".0&catid=" + first_indexCategory.getCatid() +
+						"&page=1&pagesize=" + PAGESIZE + "&callback=_jsonp9d75jtcn9tk");
+			}
+		} else {
+			System.out.println("------------error------------" + first_indexCategories.toString());
+		}
+	}
+
+	void getPeopleList(String path, String url) throws Exception {
+		Map<String, String> param = new HashMap<>();
+		String returnString = doPostXWwwFormUrlencoded(url, param, "牧人列表");
+		List<First_PeopleBean> first_peopleBeans = JSONArray.parseArray(getJsonArrayString(returnString), First_PeopleBean.class);
 		if (!ObjectUtils.isEmpty(first_peopleBeans) && first_peopleBeans.size() > 0) {
 			for (int i = 0; i < first_peopleBeans.size(); i++) {
 				First_PeopleBean first_peopleBean = first_peopleBeans.get(i);
-				getXilie(path + "/" + first_peopleBean.getCategory(), first_peopleBean.getId());
+				second_GetXilie(path + "/" + first_peopleBean.getCategory(), "https://data-api.cnfuyin" +
+						".com/api/movie/lists?" + "app=fytv&device=mobile&version=1.1" +
+						".0&catid=" + first_peopleBean.getId() +
+						"&page=1&pagesize=" + PAGESIZE + "&callback=_jsonprjw69gtz26");
 			}
 		} else {
 			System.out.println("------------error------------" + first_peopleBeans.toString());
 		}
-
 	}
 
-	void getXilie(String path, String id) throws Exception {
+	void second_GetXilie(String path, String url) throws Exception {
 		Map<String, String> param = new HashMap<>();
-		String url = "https://data-api.cnfuyin.com/api/movie/lists?app=fytv&device=mobile&version=1.1.0&catid=" + id +
-				"&page=1&pagesize=" + PAGESIZE + "&callback=_jsonprjw69gtz26";
-		String retrunString = doPostXWwwFormUrlencoded(url, param, "系列");
-		Second_XiLieBean threeXiLieBean = JSONObject.parseObject(getJsonString(retrunString), Second_XiLieBean.class);
+		String returnString = doPostXWwwFormUrlencoded(url, param, "系列");
+		Second_XiLieBean threeXiLieBean = JSONObject.parseObject(getJsonString(returnString), Second_XiLieBean.class);
 		if (!ObjectUtils.isEmpty(threeXiLieBean) && !ObjectUtils.isEmpty(threeXiLieBean.getData())
 				&& !ObjectUtils.isEmpty(threeXiLieBean.getData().size() > 0)) {
 			for (int i = 0; i < threeXiLieBean.getData().size(); i++) {
@@ -93,6 +152,22 @@ public class downloadFuYinTV {
 			}
 		} else {
 			System.out.println("------------error------------" + threeXiLieBean.toString());
+		}
+
+	}
+
+	void second_最近更新_GetXilie(String path, String url) throws Exception {
+		Map<String, String> param = new HashMap<>();
+		String returnString = doPostXWwwFormUrlencoded(url, param, "最近更新");
+		Second_最近更新_XiLieBean second_最近更新_xiLieBean = JSONObject.parseObject(getJsonString(returnString), Second_最近更新_XiLieBean.class);
+		if (!ObjectUtils.isEmpty(second_最近更新_xiLieBean) && !ObjectUtils.isEmpty(second_最近更新_xiLieBean.getUpdate_list())
+				&& !ObjectUtils.isEmpty(second_最近更新_xiLieBean.getUpdate_list().size() > 0)) {
+			for (int i = 0; i < second_最近更新_xiLieBean.getUpdate_list().size(); i++) {
+				Second_最近更新_XiLieBean.XiLie xiLie = second_最近更新_xiLieBean.getUpdate_list().get(i);
+				getUrls(path + "/" + xiLie.getTitle(), xiLie.getMovid());
+			}
+		} else {
+			System.out.println("------------error------------" + second_最近更新_xiLieBean.toString());
 		}
 
 	}

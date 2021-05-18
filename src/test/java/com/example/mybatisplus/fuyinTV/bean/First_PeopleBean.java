@@ -2,9 +2,6 @@ package com.example.mybatisplus.fuyinTV.bean;
 
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Copyright 2004-2020 by xdja.com  All rights reserved.
  *
