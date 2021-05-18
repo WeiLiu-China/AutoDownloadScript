@@ -15,9 +15,12 @@ import java.util.Map;
  * @createTime 2021/05/18 09:40:31
  */
 public class Constant {
-	public static int threadNum = 30;
+	public static int threadNum = 5;
 	/**
 	 * 仍在内存中的线程，可用于判断下载失败的
 	 */
 	public static List<String> threadNameList = new ArrayList<>();
+
+	public static int runThreadNum = 0;
+
 }

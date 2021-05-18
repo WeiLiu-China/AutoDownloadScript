@@ -2,7 +2,7 @@ package com.example.mybatisplus;
 
 import lombok.SneakyThrows;
 
-import static com.example.mybatisplus.Constant.threadNameList;
+import static com.example.mybatisplus.Constant.*;
 import static com.example.util.FileUtil.download;
 
 /**
@@ -52,13 +52,24 @@ public class DownloadThread extends Thread {
 	@SneakyThrows
 	@Override
 	public void run() {
-		String inputName = "Thread--" + app + "-" + path + name +
+		runThreadNum++;
+		String inputName = "\nThread--" + app + "-" + path + name +
 				"\n-------------------------------------\n  url" + url;
+		System.out.println("-------------------------------\n现在线程数为：" + runThreadNum);
+
 		threadNameList.add(inputName);
 		Thread.currentThread().setName(inputName);
 
-		download(path, name, url);
+		try {
+			download(path, name, url);
+		} catch (Exception e) {
+			for (int i = 0; i < 10; i++) {
+				Thread.sleep(10000);
+				System.out.println("下载失败：\n" + inputName + "\n");
+			}
+		}
 		threadNameList.remove(inputName);
+		runThreadNum--;
 	}
 
 }
