@@ -17,7 +17,7 @@ import static com.example.util.HttpClientUtil.downLoadByHttpClient;
  */
 public class FileUtil {
 
-	public static final int TWO_MIN = 2 * 60 * 1000;
+	public static final int ONE_MIN = 1 * 60 * 1000;
 
 	public static void makeDir(String path) {
 		File file = new File(path);
@@ -41,8 +41,8 @@ public class FileUtil {
 		URL urlConnection = new URL(url);
 		//根据URL打开链接
 		URLConnection connection = urlConnection.openConnection();
-		connection.setConnectTimeout(TWO_MIN);
-		connection.setReadTimeout(TWO_MIN);
+		connection.setConnectTimeout(ONE_MIN);
+		connection.setReadTimeout(ONE_MIN);
 		//从连接处获取输入流对象
 		InputStream inputStream = connection.getInputStream();
 		path += name;
