@@ -27,9 +27,9 @@ public class HttpClientUtil {
 
 		//请求的参数配置，分别设置连接池获取连接的超时时间，连接上服务器的时间，服务器返回数据的时间
 		RequestConfig config = RequestConfig.custom()
-				.setConnectionRequestTimeout(3000)
-				.setConnectTimeout(3000)
-				.setSocketTimeout(3000)
+				.setConnectionRequestTimeout(60*1000)
+				.setConnectTimeout(60*1000)
+				.setSocketTimeout(60*1000)
 				.build();
 		//配置信息添加到Get请求中
 		get.setConfig(config);

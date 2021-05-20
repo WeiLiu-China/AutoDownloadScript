@@ -8,6 +8,7 @@ import com.爬虫.util.FileUtil;
 import org.junit.Test;
 import org.springframework.util.ObjectUtils;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +42,7 @@ public class fuyin_yingyuan {
 
 	}
 
-	void getListHtmlUrlsAndGoOn(String path, String parentHtmlString) {
+	void getListHtmlUrlsAndGoOn(String path, String parentHtmlString) throws UnsupportedEncodingException {
 		String key = "mlist";
 		List<Integer> indexList = new ArrayList<>();
 		for (int i = -1; i <= parentHtmlString.lastIndexOf(key); ++i) {
@@ -72,7 +73,7 @@ public class fuyin_yingyuan {
 
 	}
 
-	void secondHtml(String path, String url) {
+	void secondHtml(String path, String url) throws UnsupportedEncodingException {
 		String originPath = path + "";
 		String originUrl = url + "";
 		String parentHtmlString = sendGet(host + url, null);
@@ -143,7 +144,7 @@ public class fuyin_yingyuan {
 		}
 	}
 
-	void threeDetailHtml(String path, String url) {
+	void threeDetailHtml(String path, String url) throws UnsupportedEncodingException {
 		int num = 1;
 		System.out.println("-------------\nnum:" + num + "\n");
 
@@ -165,7 +166,6 @@ public class fuyin_yingyuan {
 
 					s = s.substring(indexList.get(i) - 80, indexList.get(i) + 4);
 					String videoUrl = s + "";
-					System.out.println("-------------\nvideoUrl:" + videoUrl + "\n");
 					if (!videoUrl.contains("http")) {
 						continue;
 					}
@@ -185,11 +185,13 @@ public class fuyin_yingyuan {
 					try {
 						String type = videoUrl + "";
 						type = type.substring(videoUrl.length() - 4, videoUrl.length());
+						System.out.println("-------------\nvideoUrl:" + videoUrl + "\n");
 						FileUtil.download(path, "/" + name + type, videoUrl);
+						//稳定，速度极慢，日志多
+						// FileUtil.clientDownload(path, "/" + name + type, videoUrl);
 					} catch (Exception e) {
-						System.out.println("------------失败------------" + videoUrl);
 						System.out.println("------------失败原因------------" + e.getMessage());
-
+						System.out.println("------------失败------------" + videoUrl);
 					}
 				}
 			}
@@ -204,7 +206,7 @@ public class fuyin_yingyuan {
 		CommonThread commonThread = new CommonThread();
 		commonThread.start();
 
-		String path = "F:\\爬虫\\福音影院";      //保存目录
+		String path = "D:\\爬虫\\福音影院";      //保存目录
 		getAllList(path);
 	}
 
