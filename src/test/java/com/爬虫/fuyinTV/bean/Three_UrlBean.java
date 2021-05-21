@@ -42,7 +42,6 @@ public class Three_UrlBean {
 		private Boolean mp4;
 		private String img_url;
 		private String title;
-		private Boolean txt;
 		private int urlid;
 	}
 }

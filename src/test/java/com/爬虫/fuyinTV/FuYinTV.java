@@ -7,12 +7,14 @@ import com.爬虫.CommonThread;
 import com.爬虫.fuyinTV.bean.*;
 import com.爬虫.fuyinTV.bean.最近更新.Second_最近更新_XiLieBean;
 import com.爬虫.fuyinTV.bean.视频茶经.Second_视频茶经_XiLieBean;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.junit.Test;
 import org.springframework.util.ObjectUtils;
 
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +29,6 @@ import static com.爬虫.util.StringUtil.subString;
 
 public class FuYinTV {
 
-	public static final String 福音_TV = "福音TV";
 	public static final String PAGESIZE = "10000";
 
 	String getJsonArrayString(String jsString) {
@@ -130,6 +131,11 @@ public class FuYinTV {
 	void second_GetXilie(String path, String url) throws Exception {
 		Map<String, String> param = new HashMap<>();
 		String returnString = doPostXWwwFormUrlencoded(url, param, "系列");
+		try {
+			JSONObject.parseObject(getJsonString(returnString), Second_XiLieBean.class);
+		} catch (Exception e) {
+			System.out.println();
+		}
 		Second_XiLieBean threeXiLieBean = JSONObject.parseObject(getJsonString(returnString), Second_XiLieBean.class);
 		if (!ObjectUtils.isEmpty(threeXiLieBean) && !ObjectUtils.isEmpty(threeXiLieBean.getData())
 				&& !ObjectUtils.isEmpty(threeXiLieBean.getData().size() > 0)) {
@@ -159,27 +165,93 @@ public class FuYinTV {
 
 	}
 
+	public static void main(String[] args) {
+		String result = "{\"movid\":2491,\"title\":\"主祷文-唐崇荣牧师\",\"subtitle\":\"唐崇荣牧师分享主祷文\",\"actor\":\"唐崇荣\",\"area\":\"大陆\",\"director\":\"唐崇荣国际布道团\",\"category\":\"208\",\"pic\":\"https:\\/\\/img.tv.cnfuyin.com\\/upload\\/image\\/movie\\/20141024\\/101b361cd937d18a.jpg\",\"addtime\":1414118928,\"modifytime\":1436328828,\"urlcount_1\":19,\"urlcount_5\":19,\"smil\":0,\"desc\":0,\"content\":\"<p>&nbsp;主祷文<br \\/>\\r\\n我们在天上的父，愿人都尊你的名为圣。<br \\/>\\r\\n愿你的国降临。愿你的旨意行在地上，如同行在天上。<br \\/>\\r\\n我们日用的饮食，今日赐给我们。<br \\/>\\r\\n免我们的债，如同我们免了人的债。<br \\/>\\r\\n不叫我们遇见试探。救我们脱离凶恶。<br \\/>\\r\\n因为国度、权柄、荣耀，全是你的，直到永远。阿们<\\/p>\\r\\n\\r\\n<p>马太福音6章9-13节 请听唐牧师的精彩分享！<\\/p>\\r\\n\\r\\n<p><strong>唐崇荣牧师分享的主祷文系列讲座已更新完结。<\\/strong><br \\/>\\r\\n<strong style=\\\"line-height:1.6em\\\">更新日期:2015-07-8<\\/strong><\\/p>\\r\\n\",\"urls\":[{\"urlid\":37600,\"title\":\"唐牧师分享-主祷文01讲\",\"sort_title\":\"第1集\",\"mp3\":true,\"mp4\":true,\"doc\":false,\"txt\":false},{\"urlid\":37601,\"title\":\"唐牧师分享-主祷文02讲\",\"sort_title\":\"第2集\",\"mp3\":true,\"mp4\":true,\"doc\":false,\"txt\":false},{\"urlid\":37602,\"title\":\"唐牧师分享-主祷文03讲\",\"sort_title\":\"第3集\",\"mp3\":true,\"mp4\":true,\"doc\":false,\"txt\":false},{\"urlid\":37603,\"title\":\"唐牧师分享-主祷文04讲\",\"sort_title\":\"第4集\",\"mp3\":true,\"mp4\":true,\"doc\":false,\"txt\":false},{\"urlid\":37604,\"title\":\"唐牧师分享-主祷文05讲\",\"sort_title\":\"第5集\",\"mp3\":true,\"mp4\":true,\"doc\":false,\"txt\":false},{\"urlid\":37605,\"title\":\"唐牧师分享-主祷文06讲\",\"sort_title\":\"第6集\",\"mp3\":true,\"mp4\":true,\"doc\":false,\"txt\":false},{\"urlid\":37606,\"title\":\"唐牧师分享-主祷文07讲\",\"sort_title\":\"第7集\",\"mp3\":true,\"mp4\":true,\"doc\":false,\"txt\":false},{\"urlid\":38083,\"title\":\"唐牧师分享-主祷文08讲\",\"sort_title\":\"第8集\",\"mp3\":true,\"mp4\":true,\"doc\":false,\"txt\":false},{\"urlid\":38084,\"title\":\"唐牧师分享-主祷文09讲\",\"sort_title\":\"第9集\",\"mp3\":true,\"mp4\":true,\"doc\":false,\"txt\":false},{\"urlid\":38163,\"title\":\"唐牧师分享-主祷文10讲\",\"sort_title\":\"第10集\",\"mp3\":true,\"mp4\":true,\"doc\":false,\"txt\":false},{\"urlid\":38164,\"title\":\"唐牧师分享-主祷文11讲\",\"sort_title\":\"第11集\",\"mp3\":true,\"mp4\":true,\"doc\":false,\"txt\":false},{\"urlid\":38165,\"title\":\"唐牧师分享-主祷文12讲\",\"sort_title\":\"第12集\",\"mp3\":true,\"mp4\":true,\"doc\":false,\"txt\":false},{\"urlid\":38508,\"title\":\"唐牧师分享-主祷文13讲\",\"sort_title\":\"第13集\",\"mp3\":true,\"mp4\":true,\"doc\":false,\"txt\":false},{\"urlid\":38509,\"title\":\"唐牧师分享-主祷文14讲\",\"sort_title\":\"第14集\",\"mp3\":true,\"mp4\":true,\"doc\":false,\"txt\":false},{\"urlid\":42123,\"title\":\"唐牧师分享-主祷文15讲\",\"sort_title\":\"第15集\",\"mp3\":true,\"mp4\":true,\"doc\":false,\"txt\":false},{\"urlid\":42124,\"title\":\"唐牧师分享-主祷文16讲\",\"sort_title\":\"第16集\",\"mp3\":true,\"mp4\":true,\"doc\":false,\"txt\":false},{\"urlid\":42125,\"title\":\"唐牧师分享-主祷文17讲\",\"sort_title\":\"第17集\",\"mp3\":true,\"mp4\":true,\"doc\":false,\"txt\":false},{\"urlid\":42126,\"title\":\"唐牧师分享-主祷文18讲\",\"sort_title\":\"第18集\",\"mp3\":true,\"mp4\":true,\"doc\":false,\"txt\":false},{\"urlid\":42127,\"title\":\"唐牧师分享-主祷文19讲\",\"sort_title\":\"第19集\",\"mp3\":true,\"mp4\":true,\"doc\":false,\"txt\":false}],\"zs\":{\"open\":0}}";
+
+		try {
+			JSONObject.parseObject(result, Three_UrlBean.class);
+			System.out.println("1");
+		} catch (Exception e) {
+			System.out.println("0");
+		}
+	}
+
 	void getUrls(String path, int movid) throws Exception {
 		Map<String, String> param = new HashMap<>();
 		String url = "https://data-api.cnfuyin.com/api/movie/index?app=fytv&device=mobile&version=1.1.0&movid=" + movid + "&token=2fc55a83f4f7a7e8e32a3dddfeaf68d1";
 		url += movid;
 		String retrunString = doPostXWwwFormUrlencoded(url, param, "牧人系列");
-		Three_UrlBean three_urlBean = JSONObject.parseObject(retrunString, Three_UrlBean.class);
-		if (!ObjectUtils.isEmpty(three_urlBean) &&
-				!ObjectUtils.isEmpty(three_urlBean.getUrls())) {
-			for (int i = 0; i < three_urlBean.getUrls().size(); i++) {
-				Three_UrlBean.Url urlBean = three_urlBean.getUrls().get(i);
+		List<Three_UrlBean.Url> urls = null;
+		try {
+			urls = JSONObject.parseObject(retrunString, Three_UrlBean.class).getUrls();
+		} catch (Exception e) {
+			try {
+				System.out.println("第一次转型失败:" + retrunString + "\n");
+
+				retrunString = retrunString.substring(retrunString.indexOf("\"urls\":") + 7, retrunString.length() - 1);
+				retrunString = retrunString.substring(0, retrunString.indexOf("]") + 1);
+				urls = JSONArray.parseArray(retrunString, Three_UrlBean.Url.class);
+			} catch (Exception e1) {
+				System.out.println("第二次转型失败:" + retrunString + "\n");
+				System.out.println();
+			}
+		}
+		if (!ObjectUtils.isEmpty(urls)) {
+			for (int i = 0; i < urls.size(); i++) {
+				Three_UrlBean.Url urlBean = urls.get(i);
 				try {
 					getDetail(i, path, movid, urlBean.getUrlid());
 				} catch (Exception e) {
-					System.out.println("------------失败------------" + urlBean.toString() + "e.getMessage()" + e.getMessage());
+					System.out.println("------------失败------------" + e.getMessage());
+					System.out.println("------------失败------------" + urlBean.toString());
 				}
 			}
 		} else {
-			System.out.println("------------失败------------" + three_urlBean.toString());
+			System.out.println("------------失败------------" + urls.toString());
 		}
 	}
 
+	public static String String2Json(String s) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.toCharArray()[i];
+			switch (c) {
+				case '\"':
+					sb.append("\\\"");
+					break;
+				case '\\':
+					sb.append("\\\\");
+					break;
+				case '/':
+					sb.append("\\/");
+					break;
+				case '\b':
+					sb.append("\\b");
+					break;
+				case '\f':
+					sb.append("\\f");
+					break;
+				case '\n':
+					sb.append("\\n");
+					break;
+				case '\r':
+					sb.append("\\r");
+					break;
+				case '\t':
+					sb.append("\\t");
+					break;
+				default:
+					if ((c >= 0 && c <= 31) || c == 127)// 在ASCⅡ码中，第0～31号及第127号(共33个)是控制字符或通讯专用字符
+					{
+
+					} else {
+						sb.append(c);
+					}
+					break;
+			}
+		}
+		return sb.toString();
+	}
 
 	//创建一个具有固定线程数的线程池
 	private final static ExecutorService pool = Executors.newFixedThreadPool(threadNum);
@@ -196,17 +268,10 @@ public class FuYinTV {
 				//download mp4
 				/*downDetail(i + 1, path + "/mp4", four_detailBean.getTitle(),
 						four_detailBean.getUrl_2(), ".mp4");*/
-				if (runThreadNum > 1) {
-					for (int j = 0; j < 1000; j++) {
-						Thread.sleep(2 * 1000);
-						if (runThreadNum < 5) {
-							break;
-						}
-					}
-				}
-				ClientDownloadThread downloadThread = new ClientDownloadThread("fuyin_TV", path, i, four_detailBean.getTitle(),
+				sleep();
+				/*ClientDownloadThread downloadThread = new ClientDownloadThread("fuyin_TV", path, i, four_detailBean.getTitle(),
 						".mp4", four_detailBean.getUrl_2());
-				pool.submit(downloadThread);
+				pool.submit(downloadThread);*/
 			} catch (Exception e) {
 				System.out.println("e.getMessage()\n" + e.getMessage());
 			}
@@ -214,17 +279,10 @@ public class FuYinTV {
 			try {
 				/*downDetail(i + 1, path + "/mp3", four_detailBean.getTitle(),
 						four_detailBean.getUrl_5(), ".mp3");*/
-				if (runThreadNum > 1) {
-					for (int j = 0; j < 1000; j++) {
-						Thread.sleep(2 * 1000);
-						if (runThreadNum < 5) {
-							break;
-						}
-					}
-				}
-				ClientDownloadThread downloadThread = new ClientDownloadThread("fuyin_TV", path, i, four_detailBean.getTitle(),
+				sleep();
+				/*ClientDownloadThread downloadThread = new ClientDownloadThread("fuyin_TV", path, i, four_detailBean.getTitle(),
 						".mp3", four_detailBean.getUrl_5());
-				pool.submit(downloadThread);
+				pool.submit(downloadThread);*/
 			} catch (Exception e) {
 				System.out.println(four_detailBean.getTitle() + "------------下载失败------------" + four_detailBean.getUrl_5() + "\n\n------------下载失败------------" + e.getMessage());
 			}
@@ -233,6 +291,18 @@ public class FuYinTV {
 		}
 	}
 
+
+	void sleep() throws InterruptedException {
+		if (runThreadNum > 1) {
+			Thread.sleep(2 * 1000);
+			for (int j = 0; j < 1000; j++) {
+				Thread.sleep(10 * 1000);
+				if (runThreadNum < 5) {
+					break;
+				}
+			}
+		}
+	}
 
 	/**
 	 * 向指定URL发送GET方法的请求
