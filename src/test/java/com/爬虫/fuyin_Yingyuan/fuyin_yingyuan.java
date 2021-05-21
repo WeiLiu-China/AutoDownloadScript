@@ -1,9 +1,11 @@
-package com.爬虫.fuyin_Yingyuan.tianshang_linglaing;
+package com.爬虫.fuyin_Yingyuan;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.爬虫.ClientDownloadThread;
 import com.爬虫.CommonThread;
-import com.爬虫.fuyin_Yingyuan.tianshang_linglaing.bean.Four_DetailBean;
+import com.爬虫.DownloadThread;
+import com.爬虫.fuyin_Yingyuan.bean.Four_DetailBean;
 import com.爬虫.util.FileUtil;
 import org.junit.Test;
 import org.springframework.util.ObjectUtils;
@@ -13,7 +15,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import static com.爬虫.Constant.threadNum;
+import static com.爬虫.fuyinTV.FuYinTV.sleep;
 import static com.爬虫.util.HttpUtil.doPost;
 import static com.爬虫.util.HttpUtil.sendGet;
 
@@ -186,7 +192,11 @@ public class fuyin_yingyuan {
 						String type = videoUrl + "";
 						type = type.substring(videoUrl.length() - 4, videoUrl.length());
 						System.out.println("-------------\nvideoUrl:" + videoUrl + "\n");
-						FileUtil.download(path, "/" + name + type, videoUrl);
+						sleep();
+						DownloadThread downloadThread = new DownloadThread("福音影视", path, i + 1,
+								name, type, videoUrl);
+						pool.submit(downloadThread);
+						//FileUtil.download(path, "/" + name + type, videoUrl);
 						//稳定，速度极慢，日志多
 						// FileUtil.clientDownload(path, "/" + name + type, videoUrl);
 					} catch (Exception e) {
@@ -200,6 +210,8 @@ public class fuyin_yingyuan {
 		}
 
 	}
+
+	private final static ExecutorService pool = Executors.newFixedThreadPool(threadNum);
 
 	@Test
 	public void download() throws Exception {
@@ -219,74 +231,4 @@ public class fuyin_yingyuan {
 		getListHtmlUrlsAndGoOn(path, htmlString);
 	}
 
-
-	void getDetail(String path, String id, String page, Integer j) throws Exception {
-		Map<String, String> param = new HashMap<>();
-		param.put("id", id);
-		param.put("page", page);
-
-
-		String url = "/index/Sermon/details";
-		String retrunString = sendGet(host + url, null);
-		Four_DetailBean four_detailBean = JSONObject.parseObject(retrunString, Four_DetailBean.class);
-		if (!ObjectUtils.isEmpty(four_detailBean) && four_detailBean.getStatus().equals("1") &&
-				!ObjectUtils.isEmpty(four_detailBean.getList())) {
-			for (int i = 0; i < four_detailBean.getList().size(); i++) {
-				Four_DetailBean.Detail detail = four_detailBean.getList().get(i);
-				try {
-					//downDetail(i + 1, path, detail.getTitle(), detail.getVideo_url());
-					int name_num = i + 1 + j;
-					FileUtil.download(path, "/" + name_num + "_" + detail.getTitle() + ".mp3", detail.getVideo_url());
-
-				} catch (Exception e) {
-					System.out.println("------------失败------------" + detail.getVideo_url());
-					System.out.println("------------失败原因------------" + e.getMessage());
-
-				}
-			}
-		} else {
-			System.out.println("------------失败------------" + four_detailBean.toString());
-		}
-		//继续往下
-		if (!ObjectUtils.isEmpty(four_detailBean.getList()) && four_detailBean.getList().size() >= 10) {
-			int nextPage = Integer.parseInt(page) + 1;
-			getDetail(path, id, "" + nextPage, four_detailBean.getList().size() + j);
-		}
-
-	}
-
-
-	String sendPost(String host, String url) throws Exception {
-		String rt = null;
-		try {
-			rt = doPost(host + url, null);
-		} catch (Exception e) {
-			System.out.println("-------------------------\ndoPostXWwwFormUrlencoded rt为null:\t" + host + url + "\n");
-			System.out.println("-----------错误信息：" + e.getMessage());
-		}
-		return rt;
-	}
-
-	/**
-	 * 截取字符串str中指定字符 strStart、strEnd之间的字符串
-	 *
-	 * @return
-	 */
-	public static String subString(String str, String strStart, String strEnd) {
-
-		/* 找出指定的2个字符在 该字符串里面的 位置 */
-		int strStartIndex = str.indexOf(strStart);
-		int strEndIndex = str.indexOf(strEnd);
-
-		/* index 为负数 即表示该字符串中 没有该字符 */
-		if (strStartIndex < 0) {
-			return "字符串 :---->" + str + "<---- 中不存在 " + strStart + ", 无法截取目标字符串";
-		}
-		if (strEndIndex < 0) {
-			return "字符串 :---->" + str + "<---- 中不存在 " + strEnd + ", 无法截取目标字符串";
-		}
-		/* 开始截取 */
-		String result = str.substring(strStartIndex, strEndIndex).substring(strStart.length());
-		return result;
-	}
 }

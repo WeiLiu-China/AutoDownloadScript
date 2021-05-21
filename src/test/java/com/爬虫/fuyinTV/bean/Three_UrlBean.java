@@ -43,5 +43,6 @@ public class Three_UrlBean {
 		private String img_url;
 		private String title;
 		private int urlid;
+		/*{"urlid":48671,"title":"新天新地的盼望","sort_title":"第16集","mp3":true,"mp4":true,"doc":false,"txt":false}*/
 	}
 }

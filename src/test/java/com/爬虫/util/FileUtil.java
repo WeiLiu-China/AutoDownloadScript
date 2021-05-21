@@ -18,7 +18,7 @@ import static com.爬虫.util.HttpClientUtil.downLoadByHttpClient;
  */
 public class FileUtil {
 
-	public static final int ONE_MIN = 1 * 60 * 1000;
+	public static final int ONE_MIN = 60 * 1000;
 
 	public static void makeDir(String path) {
 		File file = new File(path);
@@ -65,7 +65,7 @@ public class FileUtil {
 		//从连接处获取输入流对象
 		InputStream inputStream = connection.getInputStream();
 		path += name;
-		FileOutputStream fs;
+		FileOutputStream fs = null;
 		try {
 			File f = new File(path);
 			if (!f.exists()) {
@@ -85,6 +85,8 @@ public class FileUtil {
 			}
 
 		} catch (Exception e) {
+			fs.flush();
+			fs.close();
 			System.out.println("下载失败url  :\t " + url);
 			delete(path);
 			e.printStackTrace();
@@ -184,11 +186,14 @@ public class FileUtil {
 		FileUtil.makeDir(path);
 		File file = new File(path + name);
 		if (!file.exists()) {
+			OutputStream output = null;
 			try {
 				// http请求
-				OutputStream output = new FileOutputStream(file);
+				output = new FileOutputStream(file);
 				downLoadByHttpClient(downloadUrl, output);
 			} catch (IOException e) {
+				output.flush();
+				output.close();
 				delete(path + name);
 				System.out.println("下载失败---e.getMessage()----------" + e.getMessage());
 				e.printStackTrace();

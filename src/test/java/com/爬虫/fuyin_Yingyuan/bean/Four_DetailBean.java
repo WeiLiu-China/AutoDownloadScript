@@ -1,4 +1,4 @@
-package com.爬虫.fuyin_Yingyuan.tianshang_linglaing.bean;
+package com.爬虫.fuyin_Yingyuan.bean;
 
 import lombok.Data;
 
