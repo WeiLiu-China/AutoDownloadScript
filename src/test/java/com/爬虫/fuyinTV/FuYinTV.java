@@ -11,8 +11,7 @@ import org.junit.Test;
 import org.springframework.util.ObjectUtils;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 import static com.爬虫.Constant.runThreadNum;
 import static com.爬虫.Constant.threadNum;
@@ -62,16 +61,16 @@ public class FuYinTV {
 				"&version=1.1.0&callback=_jsonpku8mk42huei");
 
 		//2.视频茶经
-		getFirst_视频茶经(path + "/选项/视频茶经", "https://data-api.cnfuyin.com/api/category/bible?app=fytv&device=mobile" +
+		/*getFirst_视频茶经(path + "/选项/视频茶经", "https://data-api.cnfuyin.com/api/category/bible?app=fytv&device=mobile" +
 				"&version=1.1.0&callback=_jsonptiujsnm8xlk");
 
 
 		//3.最近更新
-		/*second_最近更新_GetXilie(path + "/选项/最近更新", "https://data-api.cnfuyin" +
-				".com/api/movie/tops?app=fytv&device=mobile&version=1.1.0&callback=_jsonpep5vass79w");*/
+		second_最近更新_GetXilie(path + "/选项/最近更新", "https://data-api.cnfuyin" +
+				".com/api/movie/tops?app=fytv&device=mobile&version=1.1.0&callback=_jsonpep5vass79w");
 
 		//4.推荐视频
-		/*second_GetXilie(path + "/选项/推荐视频", "https://data-api.cnfuyin.com/api/movie/lists?app=fytv&device=mobile" +
+		second_GetXilie(path + "/选项/推荐视频", "https://data-api.cnfuyin.com/api/movie/lists?app=fytv&device=mobile" +
 				"&version");*/
 
 		//5.主日信息
@@ -246,6 +245,8 @@ public class FuYinTV {
 
 	//创建一个具有固定线程数的线程池
 	private final static ExecutorService pool = Executors.newFixedThreadPool(threadNum);
+	BlockingQueue<Runnable> bq = new ArrayBlockingQueue<Runnable>(6);
+	ThreadPoolExecutor tpe = new ThreadPoolExecutor(6, 6, 50, TimeUnit.MILLISECONDS, bq);
 
 	void getDetail(int i, String path, int movid, int urlid) throws Exception {
 		Map<String, String> param = new HashMap<>();
@@ -260,12 +261,12 @@ public class FuYinTV {
 				MP4_NUM++;
 				//download mp4
 
-				 sleep();
+				sleep();
 				ClientDownloadThread downloadThread = new ClientDownloadThread("fuyin_TV", path + "/mp4", i + 1,
 						four_detailBean.getTitle(),
 						".mp4", four_detailBean.getUrl_2());
-				pool.submit(downloadThread);
-
+				/*pool.submit(downloadThread);*/
+				tpe.execute(downloadThread);
 			} catch (Exception e) {
 				ErrorBean errorBean = new ErrorBean("fuyin_TV", path + "/mp4",
 						"/" + Integer.parseInt(String.valueOf(i + 1)) + "_" + four_detailBean.getTitle() +
@@ -277,11 +278,12 @@ public class FuYinTV {
 			try {
 				MP3_NUM++;
 
-				 sleep();
+				sleep();
 				ClientDownloadThread downloadThread = new ClientDownloadThread("fuyin_TV", path + "/mp3", i + 1,
 						four_detailBean.getTitle(),
 						".mp3", four_detailBean.getUrl_5());
-				pool.submit(downloadThread);
+				/*pool.submit(downloadThread);*/
+				tpe.execute(downloadThread);
 			} catch (Exception e) {
 				ErrorBean errorBean = new ErrorBean("fuyin_TV", path + "/mp3", "/" + Integer.parseInt(String.valueOf(i + 1)) + "_" + four_detailBean.getTitle() + ".mp3", four_detailBean.getUrl_5(), e.getMessage());
 				errorList.add(errorBean);
@@ -294,14 +296,14 @@ public class FuYinTV {
 
 
 	public static void sleep() throws InterruptedException {
-		Thread.sleep(new Random(1).nextInt(10) * 1000);
+		Thread.sleep(new Random(1).nextInt(1) * 1000);
 		if (runThreadNum > 1) {
-			Thread.sleep(new Random(1).nextInt(10) * 1000);
+			Thread.sleep(new Random(1).nextInt(1) * 1000);
 			for (int j = 0; j < 1000; j++) {
-				Thread.sleep(10 * 1000);
-				if (runThreadNum < 3) {
+				if (runThreadNum < 6) {
 					break;
 				}
+				Thread.sleep(10 * 1000);
 			}
 		}
 	}
