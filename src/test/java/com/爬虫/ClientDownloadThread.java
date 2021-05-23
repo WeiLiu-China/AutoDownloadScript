@@ -59,6 +59,7 @@ public class ClientDownloadThread extends Thread {
 		runThreadNum++;
 		System.out.println("-------------------------------\n现在线程数为：" + runThreadNum);
 		System.out.println("-------------\n现在时间:" + new Date().toString() + "\n");
+		System.out.println("-------------\n正在下载:" + path + name + "\n");
 
 		try {
 			clientDownload(path, name, url);
@@ -69,6 +70,7 @@ public class ClientDownloadThread extends Thread {
 			}
 		}
 		runThreadNum--;
+
 	}
 
 }

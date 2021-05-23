@@ -247,7 +247,7 @@ public class FuYinTV {
 
 	//创建一个具有固定线程数的线程池
 	private final static ExecutorService pool = Executors.newFixedThreadPool(threadNum);
-	BlockingQueue<Runnable> bq = new ArrayBlockingQueue<Runnable>(6);
+	BlockingQueue<Runnable> bq = new ArrayBlockingQueue<Runnable>(1000000);
 	ThreadPoolExecutor tpe = new ThreadPoolExecutor(6, 6, 50, TimeUnit.MILLISECONDS, bq);
 
 	void getDetail(int i, String path, int movid, int urlid) throws Exception {
@@ -298,9 +298,9 @@ public class FuYinTV {
 
 
 	public static void sleep() throws InterruptedException {
-		Thread.sleep(new Random(1).nextInt(1) * 1000);
+		Thread.sleep(new Random(1).nextInt(4) * 1000);
 		if (runThreadNum > 1) {
-			Thread.sleep(new Random(1).nextInt(1) * 1000);
+			Thread.sleep(new Random(1).nextInt(6) * 1000);
 			for (int j = 0; j < 1000; j++) {
 				if (runThreadNum < 4) {
 					break;
