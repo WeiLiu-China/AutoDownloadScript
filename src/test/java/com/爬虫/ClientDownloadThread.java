@@ -57,24 +57,17 @@ public class ClientDownloadThread extends Thread {
 	@Override
 	public void run() {
 		runThreadNum++;
-		String inputName = "\nThread--" + app + "-" + path + name +
-				"\n-------------------------------------\n  url" + url;
 		System.out.println("-------------------------------\n现在线程数为：" + runThreadNum);
 		System.out.println("-------------\n现在时间:" + new Date().toString() + "\n");
-
-		threadNameList.add(inputName);
-		Thread.currentThread().setName(inputName);
 
 		try {
 			clientDownload(path, name, url);
 		} catch (Exception e) {
 			for (int i = 0; i < 10; i++) {
 				Thread.sleep(10000);
-				System.out.println("下载失败：\n" + inputName + "\n");
 				System.out.println("失败原因：\n" + e.getMessage() + "\n");
 			}
 		}
-		threadNameList.remove(inputName);
 		runThreadNum--;
 	}
 

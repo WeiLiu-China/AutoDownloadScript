@@ -7,6 +7,8 @@ import com.爬虫.CommonThread;
 import com.爬虫.fuyinTV.bean.*;
 import com.爬虫.fuyinTV.bean.最近更新.Second_最近更新_XiLieBean;
 import com.爬虫.fuyinTV.bean.视频茶经.Second_视频茶经_XiLieBean;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.springframework.util.ObjectUtils;
 
@@ -51,9 +53,9 @@ public class FuYinTV {
 
 	@Test
 	public void download() throws Exception {
-		CommonThread commonThread = new CommonThread();
-		commonThread.start();
 
+		Logger.getLogger("org.apache.spark").setLevel(Level.ERROR);
+		Logger.getLogger("org.eclipse.jetty.server").setLevel(Level.OFF);
 		String path = "G:\\爬虫\\福音TV";      //保存目录
 
 		// 1.牧者专栏
@@ -300,7 +302,7 @@ public class FuYinTV {
 		if (runThreadNum > 1) {
 			Thread.sleep(new Random(1).nextInt(1) * 1000);
 			for (int j = 0; j < 1000; j++) {
-				if (runThreadNum < 6) {
+				if (runThreadNum < 4) {
 					break;
 				}
 				Thread.sleep(10 * 1000);
