@@ -2,6 +2,8 @@ package com.爬虫;
 
 import lombok.SneakyThrows;
 
+import java.util.Date;
+
 import static com.爬虫.Constant.runThreadNum;
 import static com.爬虫.Constant.threadNameList;
 import static com.爬虫.util.FileUtil.clientDownload;
@@ -58,6 +60,7 @@ public class ClientDownloadThread extends Thread {
 		String inputName = "\nThread--" + app + "-" + path + name +
 				"\n-------------------------------------\n  url" + url;
 		System.out.println("-------------------------------\n现在线程数为：" + runThreadNum);
+		System.out.println("-------------\n现在时间:" + new Date().toString() + "\n");
 
 		threadNameList.add(inputName);
 		Thread.currentThread().setName(inputName);

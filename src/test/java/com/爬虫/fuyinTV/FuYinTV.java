@@ -2,6 +2,7 @@ package com.爬虫.fuyinTV;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.爬虫.ClientDownloadThread;
 import com.爬虫.CommonThread;
 import com.爬虫.fuyinTV.bean.*;
 import com.爬虫.fuyinTV.bean.最近更新.Second_最近更新_XiLieBean;
@@ -64,7 +65,8 @@ public class FuYinTV {
 		System.out.println("单线程需要下载：" + time + "分钟");
 		System.out.println("单线程需要下载：" + time / 60 + "小时");
 		System.out.println("单线程需要下载：" + time / 60 / 24 + "天 ");
-
+		System.out.println("预计大小：" + (MP3_NUM * 50 + MP4_NUM * 100) / 1000 + "Gb ");
+		System.out.println("预计大小：" + (MP3_NUM * 50 + MP4_NUM * 100) / 1000 / 1000 + "Tb " + "\n");
 		System.out.println("失败：" + errorList.size() + "条 ");
 
 		if (!ObjectUtils.isEmpty(errorList) && errorList.size() > 0) {
@@ -188,6 +190,12 @@ public class FuYinTV {
 		Map<String, String> param = new HashMap<>();
 		String url = "https://data-api.cnfuyin.com/api/movie/index?app=fytv&device=mobile&version=1.1.0&movid=" + movid + "&token=2fc55a83f4f7a7e8e32a3dddfeaf68d1";
 		url += movid;
+		try {
+			doPostXWwwFormUrlencoded(url, param, "牧人系列");
+		} catch (Exception e) {
+			System.out.println();
+
+		}
 		String retrunString = doPostXWwwFormUrlencoded(url, param, "牧人系列");
 		List<Three_UrlBean.Url> urls = null;
 		try {
@@ -216,7 +224,7 @@ public class FuYinTV {
 				}
 			}
 		} else {
-			System.out.println("------------失败------------" + urls.toString());
+			System.out.println("------------失败------------" + urls);
 		}
 	}
 
@@ -236,10 +244,10 @@ public class FuYinTV {
 				MP4_NUM++;
 				//download mp4
 				//sleep();
-				/*ClientDownloadThread downloadThread = new ClientDownloadThread("fuyin_TV", path + "/mp4", i+1,
+				ClientDownloadThread downloadThread = new ClientDownloadThread("fuyin_TV", path + "/mp4", i+1,
 				four_detailBean.getTitle(),
 						".mp4", four_detailBean.getUrl_2());
-				pool.submit(downloadThread);*/
+				pool.submit(downloadThread);
 			} catch (Exception e) {
 				ErrorBean errorBean = new ErrorBean("fuyin_TV", path + "/mp4",
 						"/" + Integer.parseInt(String.valueOf(i + 1)) + "_" + four_detailBean.getTitle() +
@@ -251,10 +259,10 @@ public class FuYinTV {
 			try {
 				MP3_NUM++;
 				//sleep();
-				/*ClientDownloadThread downloadThread = new ClientDownloadThread("fuyin_TV", path+ "/mp3", i+1,
+				ClientDownloadThread downloadThread = new ClientDownloadThread("fuyin_TV", path+ "/mp3", i+1,
 				four_detailBean.getTitle(),
 						".mp3", four_detailBean.getUrl_5());
-				pool.submit(downloadThread);*/
+				pool.submit(downloadThread);
 			} catch (Exception e) {
 				ErrorBean errorBean = new ErrorBean("fuyin_TV", path + "/mp3", "/" + Integer.parseInt(String.valueOf(i + 1)) + "_" + four_detailBean.getTitle() + ".mp3", four_detailBean.getUrl_5(), e.getMessage());
 				errorList.add(errorBean);

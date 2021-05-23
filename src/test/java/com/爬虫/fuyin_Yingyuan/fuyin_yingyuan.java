@@ -7,14 +7,14 @@ import com.爬虫.CommonThread;
 import com.爬虫.DownloadThread;
 import com.爬虫.fuyin_Yingyuan.bean.Four_DetailBean;
 import com.爬虫.util.FileUtil;
+import oracle.sql.DATE;
 import org.junit.Test;
 import org.springframework.util.ObjectUtils;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -25,8 +25,9 @@ import static com.爬虫.util.HttpUtil.sendGet;
 
 public class fuyin_yingyuan {
 
-	public static void main(String args[]) {
-		String parentHtmlString = "<a href=\"../mlist/16_1.html\"><span class=\"t_dh\">初信1</span></a>bkjbi<a href=\"." +
+	public static void main(String args[]) throws SQLException {
+		System.out.println("-------------\n现在时间:" + new Date().toString() + "\n");
+		/*String parentHtmlString = "<a href=\"../mlist/16_1.html\"><span class=\"t_dh\">初信1</span></a>bkjbi<a href=\"." +
 				"./mlist/16_1.html\"><span class=\"t_dh\">初信12</span></a>kjnkjn<a href=\"../mlist/16_1.html\"><span " +
 				"class=\"t_dh\">初信123</span></a>nkj<a href=\"../mlist/16_1.html\"><span " +
 				"class=\"t_dh\">初信1234</span></a>awdawdawfafa";
@@ -44,11 +45,11 @@ public class fuyin_yingyuan {
 			htmlUrl = htmlUrl.substring(0, htmlUrl.indexOf("html") + 4);
 			String name = s + "";
 			name = name.substring(name.indexOf("t_dh") + 6, name.indexOf("</span>"));
-		}
+		}*/
 
 	}
 
-	void getListHtmlUrlsAndGoOn(String path, String parentHtmlString) throws UnsupportedEncodingException {
+	void getListHtmlUrlsAndGoOn(String path, String parentHtmlString) throws UnsupportedEncodingException, SQLException {
 		String key = "mlist";
 		List<Integer> indexList = new ArrayList<>();
 		for (int i = -1; i <= parentHtmlString.lastIndexOf(key); ++i) {
@@ -79,7 +80,7 @@ public class fuyin_yingyuan {
 
 	}
 
-	void secondHtml(String path, String url) throws UnsupportedEncodingException {
+	void secondHtml(String path, String url) throws UnsupportedEncodingException, SQLException {
 		String originPath = path + "";
 		String originUrl = url + "";
 		String parentHtmlString = sendGet(host + url, null);
@@ -150,9 +151,10 @@ public class fuyin_yingyuan {
 		}
 	}
 
-	void threeDetailHtml(String path, String url) throws UnsupportedEncodingException {
+	void threeDetailHtml(String path, String url) throws UnsupportedEncodingException, SQLException {
 		int num = 1;
 		System.out.println("-------------\nnum:" + num + "\n");
+		System.out.println("-------------\n现在时间:" + new Date().toString() + "\n");
 
 		String parentHtmlString = sendGet(host + url, null);
 		String key = ".mp4";
