@@ -32,33 +32,9 @@ public class FuYinTV {
 		return "{" + subString(jsString, "({", "})") + "}";
 	}
 
-	@Test
-	public void download() throws Exception {
-		CommonThread commonThread = new CommonThread();
-		commonThread.start();
 
-		String path = "F:\\爬虫\\福音TV\\";      //保存目录
-
-		// 牧者专栏
-		getPeopleList(path + "/选项/牧者专栏", "https://data-api.cnfuyin.com/api/category/mzzl?app=fytv&device=mobile&version=1.1.0&callback=_jsonpku8mk42huei");
-
-		//视频茶经
-		getFirst_视频茶经(path + "/选项/视频茶经", "https://data-api.cnfuyin.com/api/category/bible?app=fytv&device=mobile&version=1.1.0&callback=_jsonptiujsnm8xlk");
-
-		//最近更新
-		second_最近更新_GetXilie(path + "/选项/最近更新", "https://data-api.cnfuyin" +
-				".com/api/movie/tops?app=fytv&device=mobile&version=1.1.0&callback=_jsonpep5vass79w");
-
-		//推荐视频
-		second_GetXilie(path + "/选项/推荐视频", "https://data-api.cnfuyin.com/api/movie/lists?app=fytv&device=mobile&version");
-
-		//主日信息
-		second_GetXilie(path + "/选项/主日信息", "https://data-api.cnfuyin.com/api/movie/lists?app=fytv&device=mobile" +
-				"&version=1.1.0&catid=205&page=1&pagesize=10000&callback=_jsonps9lj1bykkql");
-
-		//主页其他内容
-		getFirst_IndexCategory(path + "/主页其他内容", "https://data-api.cnfuyin.com/api/misc/indexCategory?app=fytv&device=mobile&version=1.1.0&callback=_jsonptdwtzvce87");
-
+	void printMessage(Long MP3_NUM, Long MP4_NUM, String type, int errorListSize) {
+		System.out.println("\n\n类型：" + type);
 		System.out.println("mp3累计：" + MP3_NUM);
 		System.out.println("mp4累计：" + MP4_NUM);
 		Long time = (MP4_NUM * 4 + MP3_NUM * 2);
@@ -68,6 +44,68 @@ public class FuYinTV {
 		System.out.println("预计大小：" + (MP3_NUM * 50 + MP4_NUM * 100) / 1000 + "Gb ");
 		System.out.println("预计大小：" + (MP3_NUM * 50 + MP4_NUM * 100) / 1000 / 1000 + "Tb " + "\n");
 		System.out.println("失败：" + errorList.size() + "条 ");
+	}
+
+	Map<String, String> xilieToPath = new HashMap<>();
+	List<String> xilieList = new ArrayList<>();
+	Map<String, String> chongfu_XilieToPath = new HashMap<>();
+
+	@Test
+	public void download() throws Exception {
+		CommonThread commonThread = new CommonThread();
+		commonThread.start();
+
+		String path = "G:\\爬虫\\福音TV\\";      //保存目录
+
+		// 1.牧者专栏
+		getPeopleList(path + "/选项/牧者专栏", "https://data-api.cnfuyin.com/api/category/mzzl?app=fytv&device=mobile&version=1.1.0&callback=_jsonpku8mk42huei");
+		Long 牧者专栏_MP3_NUM = MP3_NUM;
+		Long 牧者专栏_MP4_NUM = MP4_NUM;
+		int 牧者专栏_errorListSize = errorList.size();
+
+		//2.视频茶经
+		getFirst_视频茶经(path + "/选项/视频茶经", "https://data-api.cnfuyin.com/api/category/bible?app=fytv&device=mobile&version=1.1.0&callback=_jsonptiujsnm8xlk");
+		Long 视频茶经_MP3_NUM = MP3_NUM - 牧者专栏_MP3_NUM;
+		Long 视频茶经_MP4_NUM = MP4_NUM - 牧者专栏_MP4_NUM;
+		int 视频茶经_errorListSize = errorList.size() - 牧者专栏_errorListSize;
+
+
+		//3.最近更新
+		second_最近更新_GetXilie(path + "/选项/最近更新", "https://data-api.cnfuyin" +
+				".com/api/movie/tops?app=fytv&device=mobile&version=1.1.0&callback=_jsonpep5vass79w");
+		Long 最近更新_GetXilie_MP3_NUM = MP3_NUM - 牧者专栏_MP3_NUM - 视频茶经_MP3_NUM;
+		Long 最近更新_GetXilie_MP4_NUM = MP4_NUM - 牧者专栏_MP4_NUM - 视频茶经_MP4_NUM;
+		int 最近更新_errorListSize = errorList.size() - 牧者专栏_errorListSize - 视频茶经_errorListSize;
+
+		//4.推荐视频
+		second_GetXilie(path + "/选项/推荐视频", "https://data-api.cnfuyin.com/api/movie/lists?app=fytv&device=mobile&version");
+		Long 推荐视频_MP3_NUM = MP3_NUM - 牧者专栏_MP3_NUM - 视频茶经_MP3_NUM - 最近更新_GetXilie_MP3_NUM;
+		Long 推荐视频_MP4_NUM = MP4_NUM - 牧者专栏_MP4_NUM - 视频茶经_MP4_NUM - 最近更新_GetXilie_MP4_NUM;
+		int 推荐视频_errorListSize = errorList.size() - 牧者专栏_errorListSize - 视频茶经_errorListSize - 最近更新_errorListSize;
+
+		//5.主日信息
+		second_GetXilie(path + "/选项/主日信息", "https://data-api.cnfuyin.com/api/movie/lists?app=fytv&device=mobile" +
+				"&version=1.1.0&catid=205&page=1&pagesize=10000&callback=_jsonps9lj1bykkql");
+		Long 主日信息_MP3_NUM = MP3_NUM - 牧者专栏_MP3_NUM - 视频茶经_MP3_NUM - 最近更新_GetXilie_MP3_NUM - 推荐视频_MP3_NUM;
+		Long 主日信息_MP4_NUM = MP4_NUM - 牧者专栏_MP4_NUM - 视频茶经_MP4_NUM - 最近更新_GetXilie_MP4_NUM - 推荐视频_MP4_NUM;
+		int 主日信息_errorListSize = errorList.size() - 牧者专栏_errorListSize - 视频茶经_errorListSize - 最近更新_errorListSize - 推荐视频_errorListSize;
+
+		//6.主页其他内容
+		getFirst_IndexCategory(path + "/主页其他内容", "https://data-api.cnfuyin.com/api/misc/indexCategory?app=fytv&device=mobile&version=1.1.0&callback=_jsonptdwtzvce87");
+		Long 主页其他内容_MP3_NUM = MP3_NUM - 牧者专栏_MP3_NUM - 视频茶经_MP3_NUM - 最近更新_GetXilie_MP3_NUM - 推荐视频_MP3_NUM - 主日信息_MP3_NUM;
+		Long 主页其他内容_MP4_NUM = MP4_NUM - 牧者专栏_MP4_NUM - 视频茶经_MP4_NUM - 最近更新_GetXilie_MP4_NUM - 推荐视频_MP4_NUM - 主日信息_MP4_NUM;
+		int 主页其他内容_errorListSize =
+				errorList.size() - 牧者专栏_errorListSize - 视频茶经_errorListSize - 最近更新_errorListSize - 推荐视频_errorListSize - 主日信息_errorListSize;
+		System.out.println("\n\nxilieList.size：" + xilieList);
+		System.out.println("\n\nchongfu_XilieToPath Map：" + chongfu_XilieToPath);
+
+		printMessage(牧者专栏_MP3_NUM, 牧者专栏_MP4_NUM, ":牧者专栏", 牧者专栏_errorListSize);
+		printMessage(视频茶经_MP3_NUM, 视频茶经_MP4_NUM, ":视频茶经", 视频茶经_errorListSize);
+		printMessage(最近更新_GetXilie_MP3_NUM, 最近更新_GetXilie_MP4_NUM, ":最近更新", 最近更新_errorListSize);
+		printMessage(推荐视频_MP3_NUM, 推荐视频_MP4_NUM, ":推荐视频", 推荐视频_errorListSize);
+		printMessage(主日信息_MP3_NUM, 主日信息_MP4_NUM, ":主日信息", 主日信息_errorListSize);
+		printMessage(主页其他内容_MP3_NUM, 主页其他内容_MP4_NUM, ":主页其他内容", 主页其他内容_errorListSize);
+		printMessage(MP3_NUM, MP4_NUM, ":累计", errorList.size());
 
 		if (!ObjectUtils.isEmpty(errorList) && errorList.size() > 0) {
 			for (int i = 0; i < errorList.size(); i++) {
@@ -141,6 +179,7 @@ public class FuYinTV {
 	}
 
 	void second_GetXilie(String path, String url) throws Exception {
+		//TODO 去重，避免重复下载
 		Map<String, String> param = new HashMap<>();
 		String returnString = doPostXWwwFormUrlencoded(url, param, "系列");
 		Second_XiLieBean threeXiLieBean = null;
@@ -158,10 +197,16 @@ public class FuYinTV {
 				&& !ObjectUtils.isEmpty(threeXiLieBean.getData().size() > 0)) {
 			for (int i = 0; i < threeXiLieBean.getData().size(); i++) {
 				Second_XiLieBean.XiLie xiLie = threeXiLieBean.getData().get(i);
-				getUrls(path + "/" + xiLie.getTitle(), xiLie.getMovid());
+				if (xilieList.contains(xiLie.getTitle())) {
+					xilieList.add(xiLie.getTitle());
+					chongfu_XilieToPath.put(xiLie.getTitle(), path + "/" + xiLie.getTitle());
+				} else {
+					xilieToPath.put(xiLie.getTitle(), path + "/" + xiLie.getTitle());
+					getUrls(path + "/" + xiLie.getTitle(), xiLie.getMovid());
+				}
 			}
 		} else {
-			System.out.println("------------error------------" + threeXiLieBean.toString());
+			System.out.println("------------error------------" + threeXiLieBean);
 		}
 
 	}
@@ -243,11 +288,13 @@ public class FuYinTV {
 
 				MP4_NUM++;
 				//download mp4
-				//sleep();
-				ClientDownloadThread downloadThread = new ClientDownloadThread("fuyin_TV", path + "/mp4", i+1,
-				four_detailBean.getTitle(),
+
+				/* sleep();
+				ClientDownloadThread downloadThread = new ClientDownloadThread("fuyin_TV", path + "/mp4", i + 1,
+						four_detailBean.getTitle(),
 						".mp4", four_detailBean.getUrl_2());
-				pool.submit(downloadThread);
+				pool.submit(downloadThread);*/
+
 			} catch (Exception e) {
 				ErrorBean errorBean = new ErrorBean("fuyin_TV", path + "/mp4",
 						"/" + Integer.parseInt(String.valueOf(i + 1)) + "_" + four_detailBean.getTitle() +
@@ -258,11 +305,13 @@ public class FuYinTV {
 			//download mp3
 			try {
 				MP3_NUM++;
-				//sleep();
-				ClientDownloadThread downloadThread = new ClientDownloadThread("fuyin_TV", path+ "/mp3", i+1,
-				four_detailBean.getTitle(),
+
+				 /*sleep();
+				ClientDownloadThread downloadThread = new ClientDownloadThread("fuyin_TV", path + "/mp3", i + 1,
+						four_detailBean.getTitle(),
 						".mp3", four_detailBean.getUrl_5());
 				pool.submit(downloadThread);
+				*/
 			} catch (Exception e) {
 				ErrorBean errorBean = new ErrorBean("fuyin_TV", path + "/mp3", "/" + Integer.parseInt(String.valueOf(i + 1)) + "_" + four_detailBean.getTitle() + ".mp3", four_detailBean.getUrl_5(), e.getMessage());
 				errorList.add(errorBean);
