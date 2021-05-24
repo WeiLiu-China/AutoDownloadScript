@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.springframework.util.ObjectUtils;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -264,11 +265,12 @@ public class FuYinTV {
 				//download mp4
 
 				sleep();
-				ClientDownloadThread downloadThread = new ClientDownloadThread("fuyin_TV", path + "/mp4", i + 1,
-						four_detailBean.getTitle(),
-						".mp4", four_detailBean.getUrl_2());
-				/*pool.submit(downloadThread);*/
-				tpe.execute(downloadThread);
+				if (!ObjectUtils.isEmpty(four_detailBean.getUrl_2())) {
+					ClientDownloadThread downloadThread = new ClientDownloadThread("fuyin_TV", path + "/mp4", i + 1,
+							four_detailBean.getTitle(),
+							".mp4", four_detailBean.getUrl_2());
+					tpe.execute(downloadThread);
+				}
 			} catch (Exception e) {
 				ErrorBean errorBean = new ErrorBean("fuyin_TV", path + "/mp4",
 						"/" + Integer.parseInt(String.valueOf(i + 1)) + "_" + four_detailBean.getTitle() +
@@ -281,11 +283,12 @@ public class FuYinTV {
 				MP3_NUM++;
 
 				sleep();
-				ClientDownloadThread downloadThread = new ClientDownloadThread("fuyin_TV", path + "/mp3", i + 1,
-						four_detailBean.getTitle(),
-						".mp3", four_detailBean.getUrl_5());
-				/*pool.submit(downloadThread);*/
-				tpe.execute(downloadThread);
+				if (!ObjectUtils.isEmpty(four_detailBean.getUrl_5())) {
+					ClientDownloadThread downloadThread = new ClientDownloadThread("fuyin_TV", path + "/mp3", i + 1,
+							four_detailBean.getTitle(),
+							".mp3", four_detailBean.getUrl_5());
+					tpe.execute(downloadThread);
+				}
 			} catch (Exception e) {
 				ErrorBean errorBean = new ErrorBean("fuyin_TV", path + "/mp3", "/" + Integer.parseInt(String.valueOf(i + 1)) + "_" + four_detailBean.getTitle() + ".mp3", four_detailBean.getUrl_5(), e.getMessage());
 				errorList.add(errorBean);
@@ -298,11 +301,13 @@ public class FuYinTV {
 
 
 	public static void sleep() throws InterruptedException {
-		Thread.sleep(new Random(1).nextInt(4) * 1000);
+		double v = new Random(1).nextDouble();
+		DecimalFormat df = new DecimalFormat("######0.00");
+		long v2 = (long) (Double.parseDouble(df.format(v)) * 200);
+		Thread.sleep(v2);
 		if (runThreadNum > 1) {
-			Thread.sleep(new Random(1).nextInt(6) * 1000);
 			for (int j = 0; j < 1000; j++) {
-				if (runThreadNum < 4) {
+				if (runThreadNum < 5) {
 					break;
 				}
 				Thread.sleep(10 * 1000);
